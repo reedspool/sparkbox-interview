@@ -1,19 +1,28 @@
 import { enableFetchMocks } from 'jest-fetch-mock'
 import { getOne, getRandomGroup } from "../../core/PokemonAPI.js";
-import { individuals, group } from "./PokemonMockData";
+import { individualsByName, individualsById, group } from "./PokemonMockData";
 
 enableFetchMocks();
 
 describe("Pokemon Mock Data", () => {
     it("Individuals exist", () => {
-        expect(individuals).toBeDefined();
+        expect(individualsByName).toBeDefined();
     })
 
-    it("All individuals have correct shape", () => {
-        Object.entries(individuals)
+    it("All individuals by name have correct shape", () => {
+        Object.entries(individualsByName)
             .forEach(([name, pokemon]) => {
                 expect(pokemon).toBeDefined();
                 expect(pokemon.name).toBe(name)
+                expect(pokemon.sprites).toHaveProperty("front_shiny");
+                expect(pokemon.sprites.front_shiny).toMatch(/^http/);
+            })
+    })
+
+    it("All individuals by id have correct shape", () => {
+        Object.entries(individualsById)
+            .forEach(([name, pokemon]) => {
+                expect(pokemon).toBeDefined();
                 expect(pokemon.sprites).toHaveProperty("front_shiny");
                 expect(pokemon.sprites.front_shiny).toMatch(/^http/);
             })
@@ -27,6 +36,16 @@ describe("Pokemon Mock Data", () => {
            expect(item.url).toMatch(/^http/);
         });
     })
+
+    it("Group name matches inviduals by id names", () => {
+        group.results.forEach(({ name, url }) => {
+            const match = url.match(/(\d+)\/$/)[1];
+            const numeric = Number(match);
+            expect(numeric).toBeLessThanOrEqual(898);
+            expect(numeric).toBeGreaterThanOrEqual(0);
+            expect(individualsById[numeric].name).toBe(name);
+        });
+    })
 })
 
 describe("Singular Pokemon API", () => {
@@ -37,7 +56,7 @@ describe("Singular Pokemon API", () => {
     it("Can request one Pokemon", async () => {
         const name = "farfetchd";
         fetch.mockResponseOnce(
-            JSON.stringify(individuals[name]));
+            JSON.stringify(individualsByName[name]));
         const result = await getOne(name);
         expect(result).toBeDefined();
         expect(result.name).toBe(name)

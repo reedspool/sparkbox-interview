@@ -1,4 +1,4 @@
-export const individuals = {
+export const individualsByName = {
     farfetchd : {
         name: "farfetchd",
         sprites: {
@@ -7,6 +7,39 @@ export const individuals = {
         }
     }
 };
+
+export const individualsById = {
+    171: {
+        name: "lanturn",
+        sprites: {
+            front_shiny: "http://pokeapi.co/media/sprites/pokemon/shiny/12.png"
+        }
+    },
+    172: {
+        name: "pichu",
+        sprites: {
+            front_shiny: "http://pokeapi.co/media/sprites/pokemon/shiny/12.png"
+        }
+    },
+    173: {
+        name: "cleffa",
+        sprites: {
+            front_shiny: "http://pokeapi.co/media/sprites/pokemon/shiny/12.png"
+        }
+    },
+    174: {
+        name: "igglybuff",
+        sprites: {
+            front_shiny: "http://pokeapi.co/media/sprites/pokemon/shiny/12.png"
+        }
+    },
+    175: {
+        name: "togepi",
+        sprites: {
+            front_shiny: "http://pokeapi.co/media/sprites/pokemon/shiny/12.png"
+        }
+    }
+}
 
 export const group = {
     "count": 1118,

@@ -1,0 +1,18 @@
+#+TITLE: Sparkbox Interview Project
+
+* Technologies
+:PROPERTIES:
+:CREATED:  [2021-02-15 Mon 16:05]
+:END:
+
+- Next.js
+- React
+- XState
+- [[https://pokeapi.co/][Pokemon API]]
+
+* Tasks
+
+- [X] Copy existing project and gut it
+- [X] Do first git commit
+- [ ] Make private GitHub repo and push
+- [ ] Display a page of 50 Pokemon

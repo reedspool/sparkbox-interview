@@ -1,0 +1,10 @@
+{
+  "presets": [
+      ["@babel/preset-env", {"targets": {"node": "current"}}],
+      "@babel/preset-typescript",
+      "@babel/preset-react",
+      "next/babel" // Keep this last or we get an false error
+  ],
+  "plugins": [
+  ]
+}

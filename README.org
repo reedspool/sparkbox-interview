@@ -15,7 +15,7 @@
 
 - [X] Copy existing project and gut it
 - [X] Do first git commit
-- [ ] Make private GitHub repo and push
+- [X] Make private GitHub repo and push
 - [ ] Make a single request from the Pokemon API
 - [ ] Display a page of 50 Pokemon
 - [ ] User can /favorite/ individual Pokemon (not persisted)

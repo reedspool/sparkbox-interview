@@ -21,10 +21,11 @@ describe("Pokemon Mock Data", () => {
 
     it("All individuals by id have correct shape", () => {
         Object.entries(individualsById)
-            .forEach(([name, pokemon]) => {
+            .forEach(([id, pokemon]) => {
                 expect(pokemon).toBeDefined();
                 expect(pokemon.sprites).toHaveProperty("front_shiny");
                 expect(pokemon.sprites.front_shiny).toMatch(/^http/);
+                expect(pokemon.id).toBe(Number(id));
             })
     })
 
@@ -43,6 +44,7 @@ describe("Pokemon Mock Data", () => {
             expect(id).toBeLessThanOrEqual(898);
             expect(id).toBeGreaterThanOrEqual(0);
             expect(individualsById[id].name).toBe(name);
+            expect(individualsById[id].id).toBe(Number(id));
         });
     })
 })

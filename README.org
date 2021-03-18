@@ -7,6 +7,7 @@
 
 - Next.js
 - React
+- Tailwind CSS
 - XState
 - [[https://pokeapi.co/][Pokemon API]]
 
@@ -15,4 +16,33 @@
 - [X] Copy existing project and gut it
 - [X] Do first git commit
 - [ ] Make private GitHub repo and push
+- [ ] Make a single request from the Pokemon API
 - [ ] Display a page of 50 Pokemon
+- [ ] User can /favorite/ individual Pokemon (not persisted)
+- [ ] User can unfavorite favorited Pokemon
+- [ ] User can sort the list of Pokemon by name from A-Z
+- [ ] In less than one hour, do one of the following:
+  + [ ] Diagram how this “system” should be built with the goal of communicating the plan to a team and include it in your README as a picture or rough drawn sketch.
+  + [ ] Decompose this exercise into technical tasks that need to be accomplished as Github issues.
+  + [ ] Describe a development pipeline and feedback loop for a team building this system in the README.
+- [ ] Add cromwellryan, asimpson and robtarr as collaborators to GitHub repo
+
+* Acceptance Criteria
+:PROPERTIES:
+:CREATED:  [2021-03-17 Wed 20:06]
+:END:
+
+1. npm install pulls down all dependencies for the app.
+2. npm test runs any defined tests.
+3. npm start runs the app successfully.
+4. There is more than 1 commit message.
+5. Commit messages encompass work that makes sense to be grouped together and demonstrate how work evolved over time.
+6. React components are in separate files and are broken up in sensible ways.
+7. React state is never updated outside of setState.
+8. There are no React warnings or errors in the browser console.
+9. JavaScript is served from an external file and not inline in the main html file.
+10. A bundler of some kind (Webpack, Rollup, Google Closure) is used to combine JS files.
+11. The bundled JS file is not included in the repo.
+12. The HTML contains a valid meta tag that sets the viewport to be ready for RWD.
+13. The DOM isn’t modified outside of React’s JSX rendering.
+14. At least one technical artifact is included and is clearly describes the system.

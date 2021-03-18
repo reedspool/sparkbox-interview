@@ -12,3 +12,9 @@ export async function getRandomGroup(limit) {
         `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
         .then(result => result.json());
 }
+
+export function getIdFromUrl(url) {
+    const match = url.match(/(\d+)\/$/)[1];
+    const numeric = Number(match);
+    return numeric;
+}

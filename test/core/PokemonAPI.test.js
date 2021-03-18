@@ -1,5 +1,5 @@
 import { enableFetchMocks } from 'jest-fetch-mock'
-import { getOne, getRandomGroup } from "../../core/PokemonAPI.js";
+import { getOne, getRandomGroup, getIdFromUrl } from "../../core/PokemonAPI.js";
 import { individualsByName, individualsById, group } from "./PokemonMockData";
 
 enableFetchMocks();
@@ -37,13 +37,12 @@ describe("Pokemon Mock Data", () => {
         });
     })
 
-    it("Group name matches inviduals by id names", () => {
+    it("Group result matches inviduals by id", () => {
         group.results.forEach(({ name, url }) => {
-            const match = url.match(/(\d+)\/$/)[1];
-            const numeric = Number(match);
-            expect(numeric).toBeLessThanOrEqual(898);
-            expect(numeric).toBeGreaterThanOrEqual(0);
-            expect(individualsById[numeric].name).toBe(name);
+            const id = getIdFromUrl(url);
+            expect(id).toBeLessThanOrEqual(898);
+            expect(id).toBeGreaterThanOrEqual(0);
+            expect(individualsById[id].name).toBe(name);
         });
     })
 })
@@ -73,5 +72,13 @@ describe("Singular Pokemon API", () => {
            expect(typeof item.name).toBe("string");
            expect(item.url).toMatch(/^http/);
         });
+    })
+})
+
+describe("Pokemon API utilities", () => {
+    it("Can request one Pokemon", async () => {
+        const url = "https://pokeapi.co/api/v2/pokemon/171/";
+        const result = getIdFromUrl(url);
+        expect(result).toBe(171);
     })
 })

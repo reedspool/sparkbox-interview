@@ -27,6 +27,13 @@
   + [ ] Describe a development pipeline and feedback loop for a team building this system in the README.
 - [ ] Add cromwellryan, asimpson and robtarr as collaborators to GitHub repo
 
+* Resources
+:PROPERTIES:
+:CREATED:  [2021-03-17 Wed 20:31]
+:END:
+
+- [[https://pokeapi.co/docs/v2][PokeAPI v2 Docs]]
+
 * Acceptance Criteria
 :PROPERTIES:
 :CREATED:  [2021-03-17 Wed 20:06]

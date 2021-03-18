@@ -1,6 +1,6 @@
 import { enableFetchMocks } from 'jest-fetch-mock'
-import { getOne } from "../../core/PokemonAPI.js";
-import { individuals } from "./PokemonMockData";
+import { getOne, getRandomGroup } from "../../core/PokemonAPI.js";
+import { individuals, group } from "./PokemonMockData";
 
 enableFetchMocks();
 
@@ -18,6 +18,15 @@ describe("Pokemon Mock Data", () => {
                 expect(pokemon.sprites.front_shiny).toMatch(/^http/);
             })
     })
+
+    it("Group has expected shape", () => {
+        expect(Array.isArray(group.results)).toBe(true);
+
+        group.results.forEach((item) => {
+           expect(typeof item.name).toBe("string");
+           expect(item.url).toMatch(/^http/);
+        });
+    })
 })
 
 describe("Singular Pokemon API", () => {
@@ -34,5 +43,16 @@ describe("Singular Pokemon API", () => {
         expect(result.name).toBe(name)
         expect(result.sprites).toHaveProperty("front_shiny");
         expect(result.sprites.front_shiny).toMatch(/^http/);
+    })
+
+    it("Can request a list of Pokemon", async () => {
+        fetch.mockResponseOnce(
+            JSON.stringify(group));
+        const result = await getRandomGroup(5);
+        expect(result).toBeDefined();
+        result.results.forEach((item) => {
+           expect(typeof item.name).toBe("string");
+           expect(item.url).toMatch(/^http/);
+        });
     })
 })

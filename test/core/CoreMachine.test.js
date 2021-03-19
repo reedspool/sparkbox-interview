@@ -57,6 +57,11 @@ describe("Basic CoreMachine", () => {
             data: group
         })
         transition({
+            type: 'UPDATE_INDIVIDUAL',
+            id: 171,
+            data: individualsById[171]
+        })
+        transition({
             type: 'done.invoke.fetchIndividuals',
             data: Object.values(individualsById)
         })

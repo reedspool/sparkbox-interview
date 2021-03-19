@@ -21,7 +21,7 @@ export const definition = {
                         },
                         onError: {
                             target: "#core.individuals.failure",
-                            actions: () => alert("There was a problem with the Pokemon API :(")
+                            actions: ["alertProblemWithAPI"]
                         }
                     },
                 },
@@ -34,14 +34,18 @@ export const definition = {
                                 id: "fetchIndividuals",
                                 src: "fetchIndividuals",
                                 onDone: {
-                                    target: "idle",
-                                    actions: ["recordIndividuals"]
+                                    target: "idle"
                                 },
                                 onError: {
                                     target: "#core.individuals.failure",
                                     actions: ["alertProblemWithAPI"]
                                 }
                             },
+                            on : {
+                                UPDATE_INDIVIDUAL : {
+                                    actions: [ "updateIndividual" ]
+                                }
+                            }
                         },
                         idle: {}
                     },
@@ -83,11 +87,8 @@ export const config = {
                     return C.individualsById[id] = { name, id }
                 });
         }),
-        recordIndividuals: assign((C, E) => {
-            // Unpack into existing skeleton
-            E.data.forEach(({ id, sprites }) => {
-                C.individualsById[id].sprites = sprites;
-            })
+        updateIndividual: assign((C, E) => {
+            C.individualsById[E.id].sprites = E.data.sprites;
         }),
         sortItems:  assign((C, E) => {
             C.sortedIndividualIds =
@@ -114,9 +115,24 @@ export const config = {
     services: {
         fetchRandom : () => getRandomGroup(AMOUNT),
         fetchIndividuals : (C, E) => {
-            return Promise.all(
-                E.data.results.map(({ url }) =>
-                    getOne(getIdFromUrl(url))));
+            return function (sendParent, receiveParent) {
+                const promises = [];
+                E.data.results.forEach(({ url }) =>
+                    {
+                        const id = getIdFromUrl(url);
+                        promises.push(getOne(id).then((data) => {
+                            sendParent({
+                                type: "UPDATE_INDIVIDUAL",
+                                id,
+                                data
+                            })
+                        }));
+                    })
+
+                // Once they're all complete, then we can proceed
+                Promise.all(promises).then(_ =>
+                    sendParent("done.invoke.fetchIndividuals"));
+            }
         }
     }
 };

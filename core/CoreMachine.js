@@ -13,7 +13,7 @@ export const definition = {
                 id: "fetchRandom",
                 src: "fetchRandom",
                 onDone: {
-                    target: "loadingIndividuals",
+                    target: "active",
                     actions: ["recordGroup"]
                 },
                 onError: {
@@ -22,21 +22,26 @@ export const definition = {
                 }
             },
         },
-        loadingIndividuals: {
-            invoke : {
-                id: "fetchIndividuals",
-                src: "fetchIndividuals",
-                onDone: {
-                    target: "active",
-                    actions: ["recordIndividuals"]
+        active : {
+            initial: "loadingIndividuals",
+            states: {
+                loadingIndividuals: {
+                    invoke: {
+                        id: "fetchIndividuals",
+                        src: "fetchIndividuals",
+                        onDone: {
+                            target: "idle",
+                            actions: ["recordIndividuals"]
+                        },
+                        onError: {
+                            target: "#core.failure",
+                            actions: [ "alertProblemWithAPI" ]
+                        }
+                    },
                 },
-                onError: {
-                    target: "failure",
-                    actions: () => alert("There was a problem with the Pokemon API :(")
-                }
-            }
+                idle : {}
+            },
         },
-        active: {},
         failure: { type: "final" }
     },
     on: {}
@@ -59,7 +64,9 @@ export const config = {
             E.data.forEach(({ id, sprites }) => {
                 C.individualsById[id].sprites = sprites;
             })
-        })
+        }),
+        alertProblemWithAPI : () =>
+            alert("There was a problem with the Pokemon API :("),
     },
     guards : {},
     services: {

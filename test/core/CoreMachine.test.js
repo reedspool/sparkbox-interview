@@ -39,7 +39,7 @@ describe("Basic CoreMachine", () => {
             type: 'done.invoke.fetchRandom',
             data: group
         })
-        expect(S).toMatchState("loadingIndividuals");
+        expect(S).toMatchState("active.loadingIndividuals");
         expect(C.group).toEqual(group.results);
 
         // The results should be unpacked from an array of {url,name}
@@ -59,7 +59,7 @@ describe("Basic CoreMachine", () => {
             type: 'done.invoke.fetchIndividuals',
             data: Object.values(individualsById)
         })
-        expect(S).toMatchState("active");
+        expect(S).toMatchState("active.idle");
 
         // The results of the individual requests should now be unpacked into
         // the existing individualsById skeleton

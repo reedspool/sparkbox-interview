@@ -145,16 +145,28 @@ describe("Sorting", () => {
 
     it("Entries start sorted by ID", () => {
         expect(S).toMatchState("sorting.byId");
-        expect(C.sortedIndividuals).toEqual(
+        expect(C.sortedIndividualIds).toEqual(
             Object.values(C.individualsById)
-                .sort((a, b) => a.id - b.id))
+                .sort((a, b) => a.id - b.id)
+                .map((item) => item.id))
     })
 
     it("Entries can be sorted by name", () => {
         transition("SORT_BY_NAME");
         expect(S).toMatchState("sorting.byName");
-        expect(C.sortedIndividuals).toEqual(
+        expect(C.sortedIndividualIds).toEqual(
             Object.values(C.individualsById)
-                .sort((a, b) => a.name.localeCompare(b.name)))
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((item) => item.id))
+    })
+
+    it("After sorting by name, entries can be sorted by ID", () => {
+        transition("SORT_BY_NAME");
+        transition("SORT_BY_ID");
+        expect(S).toMatchState("sorting.byId");
+        expect(C.sortedIndividualIds).toEqual(
+            Object.values(C.individualsById)
+                .sort((a, b) => a.id - b.id)
+                .map((item) => item.id))
     })
 })

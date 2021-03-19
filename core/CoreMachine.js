@@ -90,9 +90,10 @@ export const config = {
             })
         }),
         sortItems:  assign((C, E) => {
-            C.sortedIndividuals =
+            C.sortedIndividualIds =
                 Object.values(C.individualsById ?? {})
-                    .sort(C.sortingFunction);
+                    .sort(C.sortingFunction)
+                    .map((item) => item.id);
         }),
         alertProblemWithAPI : () =>
             alert("There was a problem with the Pokemon API :("),

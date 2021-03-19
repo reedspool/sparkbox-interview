@@ -22,9 +22,28 @@ export default function Home() {
       <main>
         <h1 className="text-4xl">Pokemon Rating System</h1>
 
+        <div>
+          <span>Sorted by {
+            state.matches("sorting.byId")
+            ? "ID"
+            : "name"
+          }</span>
+          &nbsp;
+          <button onClick={
+            state.matches("sorting.byId")
+              ? () => send("SORT_BY_NAME")
+              : () => send("SORT_BY_ID")
+          }>{
+            state.matches("sorting.byId")
+            ? "Sort by name"
+            : "Sort by ID"
+          }</button>
+        </div>
         <section>
           { state.matches("individuals.active")
-            ? <PokemonList C={state.context} send={send}/>
+            ? <PokemonList entries={
+              state.context.sortedIndividualIds.map((id) =>
+                state.context.individualsById[id])} send={send}/>
             : <h2 className="text-xl">Loading...</h2>
           }
         </section>

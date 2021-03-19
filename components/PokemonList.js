@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import PokemonEntry from "./PokemonEntry";
 
-export default function PokemonList({ C, send }) {
+export default function PokemonList({ entries, send }) {
     return (
         <ol>
             {
-                Object.entries(C.individualsById).map(
-                    ([id, value]) =>
-                        <PokemonEntry value={ value } key={ id }
+                entries.map(
+                    (value) =>
+                    <PokemonEntry value={ value } key={ value.id }
                           send={send} />
                 )
             }

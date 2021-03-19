@@ -49,7 +49,7 @@ describe("Pokemon Mock Data", () => {
     })
 })
 
-describe("Singular Pokemon API", () => {
+describe("Singular Pokemon API requests", () => {
     beforeEach(() => {
         fetch.resetMocks();
     });
@@ -65,6 +65,23 @@ describe("Singular Pokemon API", () => {
         expect(result.sprites.front_shiny).toMatch(/^http/);
     })
 
+    it("Promise rejects on bad status code", async () => {
+        const name = "President Joe Biden";
+        let result;
+
+        fetch.mockResponseOnce(
+            { status: 404 });
+        try {
+            result = await getOne(name);
+        } catch (error) {
+            expect(error).toBeDefined();
+        }
+
+        expect(result).toBeUndefined();
+    })
+})
+
+describe("Multiple Pokemon API requests", () => {
     it("Can request a list of Pokemon", async () => {
         fetch.mockResponseOnce(
             JSON.stringify(group));
@@ -74,6 +91,21 @@ describe("Singular Pokemon API", () => {
            expect(typeof item.name).toBe("string");
            expect(item.url).toMatch(/^http/);
         });
+    })
+
+    it("Promise rejects on bad status code", async () => {
+        let result;
+
+        fetch.mockResponseOnce(
+            { status: 404 });
+
+        try {
+            result = await getRandomGroup(1000);
+        } catch (error) {
+            expect(error).toBeDefined();
+        }
+
+        expect(result).toBeUndefined();
     })
 })
 

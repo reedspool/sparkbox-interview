@@ -41,6 +41,10 @@ export const definition = {
                 },
                 idle : {}
             },
+            on : {
+                FAVORITE : { actions : [ "favoriteOne" ] },
+                UNFAVORITE : { actions : [ "unfavoriteOne" ] }
+            }
         },
         failure: { type: "final" }
     },
@@ -67,6 +71,12 @@ export const config = {
         }),
         alertProblemWithAPI : () =>
             alert("There was a problem with the Pokemon API :("),
+        favoriteOne: assign((C, E) => {
+            C.individualsById[E.id].favorited = true;
+        }),
+        unfavoriteOne: assign((C, E) => {
+            C.individualsById[E.id].favorited = false;
+        }),
     },
     guards : {},
     services: {

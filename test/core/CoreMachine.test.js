@@ -66,3 +66,52 @@ describe("Basic CoreMachine", () => {
         expect(C.individualsById[171]).toHaveProperty("sprites");
     })
 })
+
+describe("Favoriting", () => {
+    let machine;
+    let S;
+    let C;
+
+    function transition(event) {
+        S = machine.transition(S, event);
+        C = S.context;
+    }
+
+    beforeEach(() => {
+        machine = Machine(CoreMachine.definition)
+            .withConfig(CoreMachine.config)
+            // Supply empty context to avoid warning
+            .withContext({});
+
+        S = machine.initialState;
+        C = S.context;
+
+        // Start each of these tests in "active" state
+        transition({
+            type: 'done.invoke.fetchRandom',
+            data: group
+        })
+    });
+
+    it("Can be favorited", () => {
+        transition({
+            type: "FAVORITE",
+            id: 171
+        })
+
+        expect(C.individualsById[171].favorited).toBe(true);
+    })
+
+    it("Can be unfavorited", () => {
+        transition({
+            type: "FAVORITE",
+            id: 171
+        })
+        transition({
+            type: "UNFAVORITE",
+            id: 171
+        })
+
+        expect(C.individualsById[171].favorited).toBeFalsy();
+    })
+})

@@ -23,7 +23,7 @@ export default function Home() {
         <h1 className="text-4xl">Pokemon Rating System</h1>
 
         <section>
-          { state.matches("active")
+          { state.matches("individuals.active")
             ? <PokemonList C={state.context} send={send}/>
             : <h2 className="text-xl">Loading...</h2>
           }

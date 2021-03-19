@@ -30,7 +30,7 @@ describe("Basic CoreMachine", () => {
     })
 
     it("Immediately gets group of pokemon", () => {
-        expect(S).toMatchState("loadingRandom");
+        expect(S).toMatchState("individuals.loadingRandom");
     })
 
     it("Responds to successful load of group", () => {
@@ -39,7 +39,7 @@ describe("Basic CoreMachine", () => {
             type: 'done.invoke.fetchRandom',
             data: group
         })
-        expect(S).toMatchState("active.loadingIndividuals");
+        expect(S).toMatchState("individuals.active.loadingIndividuals");
         expect(C.group).toEqual(group.results);
 
         // The results should be unpacked from an array of {url,name}
@@ -60,7 +60,7 @@ describe("Basic CoreMachine", () => {
             type: 'done.invoke.fetchIndividuals',
             data: Object.values(individualsById)
         })
-        expect(S).toMatchState("active.idle");
+        expect(S).toMatchState("individuals.active.idle");
 
         // The results of the individual requests should now be unpacked into
         // the existing individualsById skeleton
@@ -114,5 +114,47 @@ describe("Favoriting", () => {
         })
 
         expect(C.individualsById[171].favorited).toBeFalsy();
+    })
+})
+
+describe("Sorting", () => {
+    let machine;
+    let S;
+    let C;
+
+    function transition(event) {
+        S = machine.transition(S, event);
+        C = S.context;
+    }
+
+    beforeEach(() => {
+        machine = Machine(CoreMachine.definition)
+            .withConfig(CoreMachine.config)
+            // Supply empty context to avoid warning
+            .withContext({});
+
+        S = machine.initialState;
+        C = S.context;
+
+        // Start each of these tests in "active" state
+        transition({
+            type: 'done.invoke.fetchRandom',
+            data: group
+        })
+    });
+
+    it("Entries start sorted by ID", () => {
+        expect(S).toMatchState("sorting.byId");
+        expect(C.sortedIndividuals).toEqual(
+            Object.values(C.individualsById)
+                .sort((a, b) => a.id - b.id))
+    })
+
+    it("Entries can be sorted by name", () => {
+        transition("SORT_BY_NAME");
+        expect(S).toMatchState("sorting.byName");
+        expect(C.sortedIndividuals).toEqual(
+            Object.values(C.individualsById)
+                .sort((a, b) => a.name.localeCompare(b.name)))
     })
 })

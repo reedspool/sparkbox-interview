@@ -6,49 +6,67 @@ const AMOUNT = 50;
 export const definition = {
     strict: true,
     id: "core",
-    initial: "loadingRandom",
-    states: {
-        loadingRandom: {
-            invoke : {
-                id: "fetchRandom",
-                src: "fetchRandom",
-                onDone: {
-                    target: "active",
-                    actions: ["recordGroup"]
-                },
-                onError: {
-                    target: "failure",
-                    actions: () => alert("There was a problem with the Pokemon API :(")
-                }
-            },
-        },
-        active : {
-            initial: "loadingIndividuals",
+    type: "parallel",
+    states : {
+        individuals : {
+            initial: "loadingRandom",
             states: {
-                loadingIndividuals: {
+                loadingRandom: {
                     invoke: {
-                        id: "fetchIndividuals",
-                        src: "fetchIndividuals",
+                        id: "fetchRandom",
+                        src: "fetchRandom",
                         onDone: {
-                            target: "idle",
-                            actions: ["recordIndividuals"]
+                            target: "active",
+                            actions: ["recordGroup"]
                         },
                         onError: {
-                            target: "#core.failure",
-                            actions: [ "alertProblemWithAPI" ]
+                            target: "#core.individuals.failure",
+                            actions: () => alert("There was a problem with the Pokemon API :(")
                         }
                     },
                 },
-                idle : {}
+                active: {
+                    entry: [ "sortItems" ],
+                    initial: "loadingIndividuals",
+                    states: {
+                        loadingIndividuals: {
+                            invoke: {
+                                id: "fetchIndividuals",
+                                src: "fetchIndividuals",
+                                onDone: {
+                                    target: "idle",
+                                    actions: ["recordIndividuals"]
+                                },
+                                onError: {
+                                    target: "#core.individuals.failure",
+                                    actions: ["alertProblemWithAPI"]
+                                }
+                            },
+                        },
+                        idle: {}
+                    },
+                    on: {
+                        FAVORITE: { actions: ["favoriteOne"] },
+                        UNFAVORITE: { actions: ["unfavoriteOne"] }
+                    }
+                },
+                failure: { type: "final" }
             },
-            on : {
-                FAVORITE : { actions : [ "favoriteOne" ] },
-                UNFAVORITE : { actions : [ "unfavoriteOne" ] }
-            }
         },
-        failure: { type: "final" }
-    },
-    on: {}
+        sorting: {
+            initial: "byId",
+            states: {
+                byId: {
+                    entry: [ "setSortingFunctionById", "sortItems" ],
+                    on : { SORT_BY_NAME : "byName" }
+                },
+                byName: {
+                    entry: [ "setSortingFunctionByName", "sortItems" ],
+                    on : { SORT_BY_ID : "byId" }
+                }
+            },
+        }
+    }
 };
 
 export const config = {
@@ -71,6 +89,11 @@ export const config = {
                 C.individualsById[id].sprites = sprites;
             })
         }),
+        sortItems:  assign((C, E) => {
+            C.sortedIndividuals =
+                Object.values(C.individualsById ?? {})
+                    .sort(C.sortingFunction);
+        }),
         alertProblemWithAPI : () =>
             alert("There was a problem with the Pokemon API :("),
         favoriteOne: assign((C, E) => {
@@ -78,6 +101,12 @@ export const config = {
         }),
         unfavoriteOne: assign((C, E) => {
             C.individualsById[E.id].favorited = false;
+        }),
+        setSortingFunctionById : assign((C, E) => {
+            C.sortingFunction = (a, b) => a.id - b.id;
+        }),
+        setSortingFunctionByName : assign((C, E) => {
+            C.sortingFunction = (a, b) => a.name.localeCompare(b.name);
         }),
     },
     guards : {},

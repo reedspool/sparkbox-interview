@@ -9,8 +9,80 @@
 - React
 - Tailwind CSS
 - XState
+- ImmerJS
+- Jest
 - [[https://pokeapi.co/][Pokemon API]]
 
+* Architecture
+:PROPERTIES:
+:CREATED:  [2021-03-19 Fri 12:27]
+:END:
+
+** Tools
+This is a [[https://nextjs.org][Next.js]] application, though no features of Next.js are in use at this time that are not available in create-react-app.
+
+Tests use Jest. There are tests for all code which does not relate specifically to UI, all of which live in the =core= directory.
+
+The UI is fully in React with Tailwind for CSS.
+
+A single XState machine manages state. This diagram shows the full machine, and its functionality is broken down below. You can [[https://xstate.js.org/viz/?gist=373863cf8bbf181223056a7c21a194fb][see the interactive version here]].
+
+Within XState, the context is managed by ImmerJS, for guaranteed immutability. The reason to choose ImmerJS over other immutability solutions is that access and editing are written in normal JS.
+
+** State Management in Depth
+#+CAPTION: Full XState state machine diagram, made using XState Visualizer
+#+NAME:   fig:xstate-machine
+[[./resources/statemachine-diagram.png]]
+
+There are two parallel states at the top level, "individuals" and "sorting". They are separate because although they interact with the same data, they do not affect each others' internal states. The "individuals" state is responsible for acquiring and managing Pokemon data. The "sorting" state deals only with sorting that data.
+
+Immediately when the page loads, it requests a random group of 50 pokemon. This list only includes the Pokemon's name and a URL to get more information. Luckily, that URL also contains the ID of the Pokemon. Thus, that initial group load supplies enough information to the UI to render a "skeleton" of the Pokemon list. The mechanism that shares this data with the UI render is discussed in the next section. The application moves to the "active" state, signaling to the UI to render the group.
+
+When moving to the "active" state, the machine immediately enters its initial inner state, "loadingIndividuals." The machine uses the ID from the initial load to request more data for each individual, in a flurry of singular fetch requests. Once that data is retrieved, the "skeleton" is filled in with the new data, and the machine moves forward to the "idle" state.
+
+At any point in the "active" state, the user can "favorite" or "unfavorite" any individual Pokemon. This is done by sending the XState machine an event, which is discussed in the next section.
+
+If any of the API requests fail, we move to the failure state, and cannot recover. The user would need to refresh the page to try again.
+
+Note the state machine does not implement the API requests itself, but uses functions for that implemented in the =core/PokemonAPI.js= module.
+
+For sorting, the machine begins in the "byId" state within the "sorting" top-level state. UI can send an event to change that to "byName", which causes the data itself to re-sort.
+
+** How React and XState interact
+:PROPERTIES:
+:CREATED:  [2021-03-19 Fri 12:54]
+:END:
+
+XState provides the =useMachine= React hook, which uses =useState= under the hood. The hook returns a pair of =[state, send]= which provides three important things: the =state.matches= functionality, to easily test what state we are in, =state.context= which is where we find the application data which cannot be described in finite states, and the =send= function, to send events.
+
+=send= is the easiest to describe. Wherever we need to add interactivity, we use a normal React interactivity property, and send an event to the XState machine. For example:
+
+#+begin_src jsx
+          <button onClick={
+              value.favorited
+                  ? () => send({ type: "UNFAVORITE", id: value.id})
+                  : () => send({ type: "FAVORITE", id: value.id})
+          }>...</button>
+#+end_src
+
+To see what effect this will have, search for the "type" value in the state machine's "on" definitions.
+
+=state.matches= is a function that takes a string and responds with whether or not the machine is currently in that state. This is useful for high-level UI decisions, for example whether or not the list of Pokemon is ready to be seen:
+
+#+begin_src jsx
+          { state.matches("individuals.active")
+            ? <PokemonList entries={
+              state.context.sortedIndividualIds.map((id) =>
+                state.context.individualsById[id])} send={send}/>
+            : <h2 className="text-xl">Loading...</h2>
+          }
+#+end_src
+
+Use =state.matches= whenever possible, because, as opposed to its alternative discussed below, it has only finite values observable in the structure of the machine's definition. This property makes it much less error-prone.
+
+=state.context= is where all the fuzzy stuff happens. The data itself, which is only known at run-time is managed and exposed through the context. The details in the UI are all filled in via context. The context is akin to an entire Redux store, but with the finite stuff extracted to a better format.
+
+When an external event, such as =send= from our UI, or an internal event, such as our fetch promises resolving, is received by the machine, it automatically updates itself. It runs any actions described, and it then updates its state. This state update causes the =useState= hook to re-run, and thus the UI to update.
 * Tasks
 
 - [X] Copy existing project and gut it
@@ -22,6 +94,9 @@
 - [X] User can /favorite/ individual Pokemon (not persisted)
 - [X] User can unfavorite favorited Pokemon
 - [X] User can sort the list of Pokemon by name from A-Z
+- [ ] Style it up a little bit
+- [ ] Instead of using Promise.all, allow each Pokemon request to fill in its data at time of response
+- [ ] Either fix DOM-based tests or remove them
 - [ ] In less than one hour, do one of the following:
   + [ ] Diagram how this “system” should be built with the goal of communicating the plan to a team and include it in your README as a picture or rough drawn sketch.
   + [ ] Decompose this exercise into technical tasks that need to be accomplished as Github issues.

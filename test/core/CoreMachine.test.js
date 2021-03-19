@@ -47,6 +47,7 @@ describe("Basic CoreMachine", () => {
         const id = getIdFromUrl(C.group[0].url);
         expect(C.individualsById).toHaveProperty(""+id);
         expect(C.individualsById[id].name).toBe(C.group[0].name);
+        expect(C.individualsById[id].id).toBe(id);
     })
 
     it("Responds to successful load of items", () => {

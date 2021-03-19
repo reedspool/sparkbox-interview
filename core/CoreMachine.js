@@ -60,8 +60,10 @@ export const config = {
             // Transform the list of { url, name } into
             // a map of id => { name }
             E.data.results.forEach(
-                ({ url, name }) =>
-                    C.individualsById[getIdFromUrl(url)] = { name });
+                ({ url, name }) => {
+                    const id = getIdFromUrl(url);
+                    return C.individualsById[id] = { name, id }
+                });
         }),
         recordIndividuals: assign((C, E) => {
             // Unpack into existing skeleton

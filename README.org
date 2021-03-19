@@ -96,12 +96,12 @@ When an external event, such as =send= from our UI, or an internal event, such a
 - [X] User can sort the list of Pokemon by name from A-Z
 - [X] Style it up a little bit
 - [X] Instead of using Promise.all, allow each Pokemon request to fill in its data at time of response
-- [ ] Either fix DOM-based tests or remove them
+- [X] Either fix DOM-based tests or remove them
 - [X] In less than one hour, do one of the following:
   + [X] Diagram how this “system” should be built with the goal of communicating the plan to a team and include it in your README as a picture or rough drawn sketch.
   + Decompose this exercise into technical tasks that need to be accomplished as Github issues.
   + Describe a development pipeline and feedback loop for a team building this system in the README.
-- [ ] Add cromwellryan, asimpson and robtarr as collaborators to GitHub repo
+- [X] Add cromwellryan, asimpson and robtarr as collaborators to GitHub repo
 
 * Resources
 :PROPERTIES:

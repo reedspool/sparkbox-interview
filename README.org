@@ -19,9 +19,9 @@
 - [X] Make a single request from the Pokemon API
 - [X] Make fetch reject on a status code != 200
 - [X] Display a page of 50 Pokemon
-- [ ] User can /favorite/ individual Pokemon (not persisted)
-- [ ] User can unfavorite favorited Pokemon
-- [ ] User can sort the list of Pokemon by name from A-Z
+- [X] User can /favorite/ individual Pokemon (not persisted)
+- [X] User can unfavorite favorited Pokemon
+- [X] User can sort the list of Pokemon by name from A-Z
 - [ ] In less than one hour, do one of the following:
   + [ ] Diagram how this “system” should be built with the goal of communicating the plan to a team and include it in your README as a picture or rough drawn sketch.
   + [ ] Decompose this exercise into technical tasks that need to be accomplished as Github issues.

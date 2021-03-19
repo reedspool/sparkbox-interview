@@ -15,12 +15,12 @@ export default function Home() {
   return (
     <Layout>
       <Head>
-        <title>Pokemon Rating</title>
+        <title>Your Favorite Pokemon</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <h1 className="text-4xl">Pokemon Rating System</h1>
+      <main className="center">
+        <h1 className="text-4xl my-10">Your Favorite Pokemon</h1>
 
         <div>
           <span>Sorted by {
@@ -29,7 +29,7 @@ export default function Home() {
             : "name"
           }</span>
           &nbsp;
-          <button onClick={
+          <button className="mx-5 border border-red-900 rounded-sm px-1 bg-gray-200" onClick={
             state.matches("sorting.byId")
               ? () => send("SORT_BY_NAME")
               : () => send("SORT_BY_ID")
@@ -39,7 +39,7 @@ export default function Home() {
             : "Sort by ID"
           }</button>
         </div>
-        <section>
+        <section className="mt-5 flex items-center">
           { state.matches("individuals.active")
             ? <PokemonList entries={
               state.context.sortedIndividualIds.map((id) =>
@@ -49,7 +49,10 @@ export default function Home() {
         </section>
       </main>
       <footer>
-        This is a work in progress.
+        Catch'm all!
+        <div>Red heart icon made by <a href="https://www.flaticon.com/authors/itim2101" title="itim2101">itim2101</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        <div>Empty heart made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        <div>Pokemon Data and images from https://pokeapi.co/</div>
       </footer>
     </Layout>
   )

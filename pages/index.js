@@ -24,7 +24,7 @@ export default function Home() {
 
         <section>
           { state.matches("active")
-            ? <PokemonList C={state.context} />
+            ? <PokemonList C={state.context} send={send}/>
             : <h2 className="text-xl">Loading...</h2>
           }
         </section>

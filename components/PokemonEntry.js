@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function PokemonList({ value }) {
+export default function PokemonEntry({ value, send }) {
     return (
         <li>
           <div>{value.name}</div>
@@ -11,6 +11,15 @@ export default function PokemonList({ value }) {
               : <span>Image loading...</span>
             }
           </div>
+          <button onClick={
+              value.favorited
+                  ? () => send({ type: "UNFAVORITE", id: value.id})
+                  : () => send({ type: "FAVORITE", id: value.id})
+          }>{
+              value.favorited
+                  ? "Unfavorite"
+                  : "Favorite"
+          }</button>
         </li>
     );
 }

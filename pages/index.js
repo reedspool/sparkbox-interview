@@ -4,6 +4,7 @@ import Layout from '../components/layout'
 import { useMachine } from "@xstate/react";
 import { Machine } from "xstate";
 import * as CoreMachine from "../core/CoreMachine";
+import PokemonList from "../components/PokemonList";
 
 export default function Home() {
 
@@ -20,6 +21,13 @@ export default function Home() {
 
       <main>
         <h1 className="text-4xl">Pokemon Rating System</h1>
+
+        <section>
+          { state.matches("active")
+            ? <PokemonList C={state.context} />
+            : <h2 className="text-xl">Loading...</h2>
+          }
+        </section>
       </main>
       <footer>
         This is a work in progress.
